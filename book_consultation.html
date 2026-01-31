@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Consultation | AdvocatBisht</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style_consultation.css">
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+
+    <header>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-balance-scale"></i> Advocat<span>Bisht</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#services">Services</a></li>
+                    <li><a href="#" class="active">Book Appointment</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <a href="#appointmentForm" class="btn">Consult Now</a>
+        </div>
+    </header>
+
+    <section class="page-header">
+        <div class="container">
+            <h1>Book a Consultation</h1>
+            <p>Schedule an appointment with our legal experts for personalized advice and professional guidance.</p>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a>
+                <span>/</span>
+                <span>Book Appointment</span>
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+        <a href="index.html" class="back-btn" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: inherit;">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+        
+        <div class="booking-container">
+            <div class="appointment-form">
+                <h2>Appointment Details</h2>
+                <p class="form-description">Fill in your details below. You will be redirected to payment to secure your slot.</p>
+                
+                <form id="appointmentForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Full Name *</label>
+                            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="caseType">Case Type *</label>
+                            <select id="caseType" name="caseType" required>
+                                <option value="" disabled selected>Select case type</option>
+                                <option value="civil">Civil Law</option>
+                                <option value="divorce">Divorce & Family Law</option>
+                                <option value="property">Property Law</option>
+                                <option value="criminal">Criminal Law</option>
+                                <option value="corporate">Corporate Law</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lawyerSelect">Select Lawyer *</label>
+                        <select id="lawyerSelect" name="lawyerSelect" required>
+                            <option value="" disabled selected>Loading available lawyers...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="date">Appointment Date *</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="time">Appointment Time *</label>
+                            <select id="time" name="time" required>
+                                <option value="" disabled selected>Select time slot</option>
+                                <option value="9-11">9:00 AM - 11:00 AM</option>
+                                <option value="11-1">11:00 AM - 1:00 PM</option>
+                                <option value="2-4">2:00 PM - 4:00 PM</option>
+                                <option value="4-6">4:00 PM - 6:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Brief Description of Your Case</label>
+                        <textarea id="message" name="message" rows="4" placeholder="Provide a brief description of your legal issue"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="consultationMode">Consultation Mode *</label>
+                        <select id="consultationMode" name="consultationMode" required>
+                            <option value="" disabled selected>Select mode</option>
+                            <option value="in-person">In-Person Meeting</option>
+                            <option value="video">Video Call</option>
+                            <option value="phone">Phone Call</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn submit-btn">Proceed to Payment</button>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <p style="color: #6c757d; font-size: 14px;">
+                            <i class="fas fa-lock" style="color: #28a745;"></i>
+                            Consultation fee: <strong>₹2,999</strong>
+                        </p>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="lawyer-sidebar">
+                <div class="lawyer-header">
+                    <div class="lawyer-avatar"></div>
+                    <h3>Adv. Rajesh Bisht</h3>
+                    <span class="lawyer-title">Senior Advocate & Legal Consultant</span>
+                    <div class="experience-badge">25+ Years of Experience</div>
+                </div>
+                
+                <div class="lawyer-details">
+                    <div class="detail-item">
+                        <h4><i class="fas fa-award"></i> Expertise</h4>
+                        <p>Civil Litigation, Property Disputes, Corporate Law, Criminal Defense, Family Law</p>
+                    </div>
+                    <div class="detail-item">
+                        <h4><i class="fas fa-clock"></i> Consultation Hours</h4>
+                        <p>Mon - Fri: 9:00 AM - 7:00 PM<br>Sat: 10:00 AM - 4:00 PM</p>
+                    </div>
+                    <div class="detail-item">
+                        <h4><i class="fas fa-map-marker-alt"></i> Office Address</h4>
+                        <p>123 Legal Avenue, Supreme Court Road, New Delhi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-container" style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px;">
+                <div class="footer-about" style="flex: 1; min-width: 250px;">
+                    <a href="index.html" class="footer-logo">Advocat<span>Bisht</span></a>
+                    <p>Providing expert legal solutions with integrity and professionalism for over 25 years.</p>
+                </div>
+                <div class="footer-links" style="flex: 1; min-width: 150px;">
+                    <h4>Quick Links</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#services">Services</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright" style="text-align: center; margin-top: 40px; border-top: 1px solid #444; padding-top: 20px;">
+                <p>&copy; 2026 AdvocatBisht. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjjjDzgFfH4qX4iTWtB4xNBSXDpAVbhuc",
+            authDomain: "advocate-b0ccf.firebaseapp.com",
+            projectId: "advocate-b0ccf",
+            storageBucket: "advocate-b0ccf.firebasestorage.app",
+            messagingSenderId: "534472016070",
+            appId: "1:534472016070:web:1c9579bc529aed9ef1d7c7"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // 1. Load Approved Lawyers
+        const lawyerSelect = document.getElementById("lawyerSelect");
+
+        db.collection("users")
+            .where("role", "==", "lawyer")
+            .where("isApproved", "==", true)
+            .onSnapshot(snapshot => {
+                lawyerSelect.innerHTML = `<option value="" disabled selected>Select a lawyer</option>`;
+                snapshot.forEach(doc => {
+                    const lawyer = doc.data();
+                    lawyerSelect.innerHTML += `
+                        <option value="${doc.id}">
+                            ${lawyer.name || lawyer.email}
+                        </option>
+                    `;
+                });
+            });
+
+        // 2. Logic from Code 2: Save to Session and Redirect to Payment
+        const appointmentForm = document.getElementById("appointmentForm");
+
+        appointmentForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const appointmentData = {
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                phone: document.getElementById("phone").value,
+                service: document.getElementById("caseType").value,
+                date: document.getElementById("date").value,
+                time: document.getElementById("time").value,
+                description: document.getElementById("message").value,
+                consultationMode: document.getElementById("consultationMode").value,
+                lawyerId: lawyerSelect.value,
+                status: "Pending Payment"
+            };
+
+            if (!appointmentData.lawyerId) {
+                alert("Please select a lawyer");
+                return;
+            }
+
+            // Store temporarily in session storage
+            sessionStorage.setItem(
+                "pendingAppointment",
+                JSON.stringify(appointmentData)
+            );
+
+            // Redirect to payment page
+            window.location.href = "payment.html";
+        });
+    </script>
+
+</body>
+</html>

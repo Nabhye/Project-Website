@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Payment Analytics | AdvocatBisht</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<style>
+body {
+    font-family: Inter, sans-serif;
+    background: #f4f7fb;
+    margin: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+h1 {
+    color: #1a365d;
+    margin-bottom: 20px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat {
+    background: #f9fafb;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.stat h2 {
+    margin: 0;
+    color: #1a365d;
+}
+
+.stat p {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #555;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 14px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+}
+
+th {
+    background: #f1f5f9;
+}
+
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.pending { background: #fff3cd; color: #856404; }
+.verified { background: #d4edda; color: #155724; }
+.rejected { background: #f8d7da; color: #721c24; }
+
+button {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.verify { background: #28a745; color: white; }
+.reject { background: #dc3545; color: white; }
+
+button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>💳 Admin Payment Analytics</h1>
+
+    <!-- STATS -->
+    <div class="stats">
+        <div class="stat">
+            <h2 id="totalCount">0</h2>
+            <p>Total Payments</p>
+        </div>
+        <div class="stat">
+            <h2 id="pendingCount">0</h2>
+            <p>Pending</p>
+        </div>
+        <div class="stat">
+            <h2 id="verifiedCount">0</h2>
+            <p>Verified</p>
+        </div>
+        <div class="stat">
+            <h2 id="rejectedCount">0</h2>
+            <p>Rejected</p>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <table>
+        <thead>
+            <tr>
+                <th>Client</th>
+                <th>Email</th>
+                <th>Lawyer</th>
+                <th>Amount</th>
+                <th>UTR</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="paymentsTable"></tbody>
+    </table>
+</div>
+
+<script>
+/* Firebase Config */
+const firebaseConfig = {
+    apiKey: "AIzaSyBjjjDzgFfH4qX4iTWtB4xNBSXDpAVbhuc",
+    authDomain: "advocate-b0ccf.firebaseapp.com",
+    projectId: "advocate-b0ccf"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const table = document.getElementById("paymentsTable");
+
+let total = 0, pending = 0, verified = 0, rejected = 0;
+
+/* Load Payments */
+db.collection("payments").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+    table.innerHTML = "";
+    total = pending = verified = rejected = 0;
+
+    snapshot.forEach(doc => {
+        const p = doc.data();
+        total++;
+
+        if (p.status === "Pending") pending++;
+        if (p.status === "Verified") verified++;
+        if (p.status === "Rejected") rejected++;
+
+        table.innerHTML += `
+            <tr>
+                <td>${p.name}</td>
+                <td>${p.email}</td>
+                <td>${p.lawyerId}</td>
+                <td>₹${p.amount}</td>
+                <td>${p.utr}</td>
+                <td><span class="badge ${p.status.toLowerCase()}">${p.status}</span></td>
+                <td>
+                    ${p.status === "Pending" ? `
+                        <button class="verify" onclick="updateStatus('${doc.id}','Verified')">Verify</button>
+                        <button class="reject" onclick="updateStatus('${doc.id}','Rejected')">Reject</button>
+                    ` : '—'}
+                </td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("totalCount").innerText = total;
+    document.getElementById("pendingCount").innerText = pending;
+    document.getElementById("verifiedCount").innerText = verified;
+    document.getElementById("rejectedCount").innerText = rejected;
+});
+
+/* Update Payment Status */
+function updateStatus(id, status) {
+    if (!confirm(`Mark payment as ${status}?`)) return;
+
+    db.collection("payments").doc(id).update({
+        status: status
+    });
+}
+</script>
+
+</body>
+</html>

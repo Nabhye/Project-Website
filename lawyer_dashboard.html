@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lawyer Dashboard | AdvocatBisht</title>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #d4af37;
+            --bg: #f4f7f9;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); }
+
+        .nav-bar {
+            background: var(--primary);
+            color: white;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo { font-size: 22px; font-weight: bold; }
+        .logo span { color: var(--secondary); }
+
+        .logout-btn {
+            background: var(--secondary);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .container { padding: 40px 50px; }
+
+        .appointment-table {
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            border-collapse: collapse;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .appointment-table th {
+            background: #eef2f7;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .appointment-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .pending { background: #fff3cd; color: #856404; }
+        .approved { background: #d4edda; color: #155724; }
+        .rejected { background: #f8d7da; color: #721c24; }
+
+        .action-btn {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        .approve { background: #28a745; color: white; }
+        .reject { background: #dc3545; color: white; }
+    </style>
+</head>
+
+<body>
+
+<nav class="nav-bar">
+    <div class="logo">Advocat<span>Bisht</span> Lawyer</div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+</nav>
+
+<div class="container">
+    <h2>Recent Appointment Requests</h2>
+    <p style="margin-bottom: 20px;">Review and manage client bookings</p>
+
+    <table class="appointment-table">
+        <thead>
+            <tr>
+                <th>Client</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Case</th>
+                <th>Date</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="bookingsTable"></tbody>
+    </table>
+</div>
+
+<script>
+/* 🔥 Firebase Init */
+const firebaseConfig = {
+    apiKey: "AIzaSyBjjjDzgFfH4qX4iTWtB4xNBSXDpAVbhuc",
+    authDomain: "advocate-b0ccf.firebaseapp.com",
+    projectId: "advocate-b0ccf",
+    storageBucket: "advocate-b0ccf.firebasestorage.app",
+    messagingSenderId: "534472016070",
+    appId: "1:534472016070:web:1c9579bc529aed9ef1d7c7"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+/* 🔐 Auth Guard */
+auth.onAuthStateChanged(async (user) => {
+    if (!user) {
+        window.location.href = "index.html";
+        return;
+    }
+
+    const snap = await db.collection("users").doc(user.uid).get();
+    if (!snap.exists || snap.data().role !== "lawyer") {
+        alert("Access denied");
+        window.location.href = "index.html";
+    }
+});
+
+/* 📥 Load Appointments */
+db.collection("appointments")
+  .orderBy("timestamp", "desc")
+  .onSnapshot(snapshot => {
+      const table = document.getElementById("bookingsTable");
+      table.innerHTML = "";
+
+      snapshot.forEach(doc => {
+          const d = doc.data();
+          const statusClass = d.status?.toLowerCase() || "pending";
+
+          table.innerHTML += `
+            <tr>
+                <td>${d.name}</td>
+                <td>${d.email}</td>
+                <td>${d.phone}</td>
+                <td>${d.service}</td>
+                <td>${d.date}</td>
+                <td>${d.description?.substring(0,20) || ""}</td>
+                <td><span class="badge ${statusClass}">${d.status}</span></td>
+                <td>
+                    <button class="action-btn approve" onclick="updateStatus('${doc.id}','APPROVED')">Approve</button>
+                    <button class="action-btn reject" onclick="updateStatus('${doc.id}','REJECTED')">Reject</button>
+                </td>
+            </tr>
+          `;
+      });
+  });
+
+/* ✅ Update Status */
+function updateStatus(docId, status) {
+    db.collection("appointments").doc(docId).update({
+        status: status
+    });
+}
+
+/* 🚪 Logout */
+function logout() {
+    auth.signOut().then(() => window.location.href = "index.html");
+}
+</script>
+
+</body>
+</html>

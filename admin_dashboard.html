@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Lawyer Approvals</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root { --primary:#1a365d; --secondary:#d4af37; --bg:#f4f7f9; }
+        body { font-family:'Inter',sans-serif; background:var(--bg); margin:0; }
+
+        .nav {
+            background:var(--primary);
+            color:white;
+            padding:15px 50px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .container {
+            padding:40px;
+            max-width:1000px;
+            margin:auto;
+        }
+
+        h1 { color:var(--primary); }
+
+        .card {
+            background:white;
+            padding:20px;
+            border-radius:10px;
+        }
+
+        table {
+            width:100%;
+            border-collapse:collapse;
+            margin-top:20px;
+        }
+
+        th {
+            background:#eee;
+            padding:12px;
+            text-align:left;
+        }
+
+        td {
+            padding:12px;
+            border-bottom:1px solid #ddd;
+        }
+
+        .btn-approve {
+            background:#27ae60;
+            color:white;
+            border:none;
+            padding:8px 15px;
+            border-radius:5px;
+            cursor:pointer;
+        }
+
+        .btn-approve:hover { background:#219150; }
+
+        .no-data {
+            text-align:center;
+            padding:20px;
+            color:#777;
+        }
+
+        .loader {
+            text-align:center;
+            padding:60px;
+            font-size:18px;
+            color:#555;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="nav">
+    <div style="font-size:20px;font-weight:bold;">AdvocatBisht Admin</div>
+    <button onclick="logout()" style="background:none;border:1px solid white;color:white;padding:5px 15px;cursor:pointer;">
+        Logout
+    </button>
+</div>
+
+<div class="container">
+
+    <!-- Loader -->
+    <div id="loader" class="loader">
+        🔐 Verifying admin access...
+    </div>
+
+    <!-- Admin Content -->
+    <div id="adminContent" style="display:none;">
+        <h1>Pending Lawyer Approvals</h1>
+        <p>Review Bar IDs and approve lawyers to grant them dashboard access.</p>
+
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Bar Council ID</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="pendingList"></tbody>
+            </table>
+            <div id="emptyMsg" class="no-data" style="display:none;">
+                No pending approvals at the moment.
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+/* 🔥 Firebase Init */
+const firebaseConfig = {
+    apiKey: "AIzaSyBjjjDzgFfH4qX4iTWtB4xNBSXDpAVbhuc",
+    authDomain: "advocate-b0ccf.firebaseapp.com",
+    projectId: "advocate-b0ccf",
+    storageBucket: "advocate-b0ccf.firebasestorage.app",
+    messagingSenderId: "534472016070",
+    appId: "1:534472016070:web:1c9579bc529aed9ef1d7c7"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+/* DOM */
+const pendingList = document.getElementById("pendingList");
+const emptyMsg = document.getElementById("emptyMsg");
+const loader = document.getElementById("loader");
+const adminContent = document.getElementById("adminContent");
+
+/* 🔐 AUTH + ADMIN GUARD (FIXED) */
+auth.onAuthStateChanged(async (user) => {
+
+    // ⏳ WAIT for Firebase to resolve auth state
+    if (user === null) {
+        return;
+    }
+
+    try {
+        const snap = await db.collection("users").doc(user.uid).get();
+
+        if (!snap.exists || snap.data().role !== "admin") {
+            window.location.href = "index.html";
+            return;
+        }
+
+        // ✅ Admin confirmed
+        loader.style.display = "none";
+        adminContent.style.display = "block";
+
+        loadPendingLawyers();
+
+    } catch (err) {
+        alert("Authentication error");
+        window.location.href = "index.html";
+    }
+});
+
+/* 🔄 Load Pending Lawyers */
+function loadPendingLawyers() {
+    db.collection("users")
+        .where("role", "==", "lawyer")
+        .where("isApproved", "==", false)
+        .onSnapshot(snapshot => {
+            pendingList.innerHTML = "";
+
+            if (snapshot.empty) {
+                emptyMsg.style.display = "block";
+                return;
+            }
+
+            emptyMsg.style.display = "none";
+
+            snapshot.forEach(doc => {
+                const lawyer = doc.data();
+                pendingList.innerHTML += `
+                    <tr>
+                        <td>${lawyer.email}</td>
+                        <td><strong>${lawyer.barId || "N/A"}</strong></td>
+                        <td>
+                            <button class="btn-approve" onclick="approveLawyer('${doc.id}')">
+                                Approve
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        });
+}
+
+/* ✅ Approve Lawyer */
+function approveLawyer(uid) {
+    if (confirm("Confirm approval for this lawyer?")) {
+        db.collection("users").doc(uid).update({ isApproved: true })
+            .then(() => alert("Lawyer approved successfully!"))
+            .catch(err => alert(err.message));
+    }
+}
+
+/* 🚪 Logout */
+function logout() {
+    auth.signOut().then(() => {
+        window.location.href = "index.html";
+    });
+}
+</script>
+
+</body>
+</html>

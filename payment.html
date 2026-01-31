@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Confirm Payment | AdvocatBisht</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
+<style>
+body {
+    font-family: Inter, sans-serif;
+    background: #f5f7fb;
+    margin: 0;
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 40px;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #1a365d;
+}
+
+.payment-box {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 25px;
+}
+
+.qr {
+    text-align: center;
+    margin: 20px 0;
+}
+
+input, button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 12px;
+    font-size: 15px;
+}
+
+input {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+button {
+    background: #d4af37;
+    color: #1a365d;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.note {
+    font-size: 14px;
+    color: #555;
+    margin-top: 15px;
+}
+
+.summary {
+    background: #f9fafb;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+.summary p {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.total {
+    font-weight: 700;
+    font-size: 18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- PAYMENT SECTION -->
+    <div class="payment-box">
+        <h2>Pay via UPI</h2>
+
+        <p><strong>Lawyer:</strong> Adv. Tarun Bisht</p>
+        <p><strong>UPI ID:</strong> <span id="upiId"></span></p>
+
+        <div class="qr">
+            <div id="qrCode"></div>
+        </div>
+
+        <p class="note">
+            Pay ₹1 using any UPI app (GPay / PhonePe / Paytm).  
+            After payment, enter the <strong>UTR / Transaction ID</strong> below.
+        </p>
+
+        <input type="text" id="utr" placeholder="Enter UTR / Transaction ID">
+
+        <button id="confirmPayment">Confirm Payment</button>
+
+        <p class="note">
+            ⚠️ Appointment will be confirmed after payment verification by the lawyer.
+        </p>
+    </div>
+
+    <!-- ORDER SUMMARY -->
+    <div class="summary">
+        <h2>Order Summary</h2>
+
+        <p><span>Consultation Fee</span><span>₹1</span></p>
+        <p><span>Documentation Fee</span><span>₹0</span></p>
+        <p><span>GST (18%)</span><span>₹0</span></p>
+
+        <hr>
+
+        <p class="total"><span>Total</span><span>₹1</span></p>
+    </div>
+
+</div>
+
+<script>
+/* Firebase Config */
+const firebaseConfig = {
+    apiKey: "AIzaSyBjjjDzgFfH4qX4iTWtB4xNBSXDpAVbhuc",
+    authDomain: "advocate-b0ccf.firebaseapp.com",
+    projectId: "advocate-b0ccf"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* Lawyer Details */
+const lawyerUPI = "9205003577@nyes";
+const lawyerName = "Adv. Tarun Bisht";
+const lawyerId = "LAWYER_001";
+const amount = 1;
+
+/* Generate UPI QR */
+const upiLink = `upi://pay?pa=${lawyerUPI}&pn=${encodeURIComponent(lawyerName)}&am=${amount}&cu=INR`;
+
+new QRCode(document.getElementById("qrCode"), {
+    text: upiLink,
+    width: 220,
+    height: 220,
+    colorDark: "#1a365d",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+});
+
+document.getElementById("upiId").innerText = lawyerUPI;
+
+/* Confirm Payment */
+document.getElementById("confirmPayment").addEventListener("click", async () => {
+    const btn = document.getElementById("confirmPayment");
+    const utr = document.getElementById("utr").value.trim();
+
+    // 1️⃣ Validate UTR format
+    const utrRegex = /^[A-Za-z0-9]{8,22}$/;
+    if (!utrRegex.test(utr)) {
+        alert("Invalid UTR format. Please enter a valid Transaction ID.");
+        return;
+    }
+
+    const appointmentData = JSON.parse(localStorage.getItem("appointmentData"));
+    if (!appointmentData) {
+        alert("Session expired. Please book again.");
+        window.location.href = "book_consultation.html";
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerText = "Verifying UTR...";
+
+    try {
+        // 2️⃣ CHECK IF UTR ALREADY EXISTS
+        const utrCheck = await db
+            .collection("payments")
+            .where("utr", "==", utr)
+            .limit(1)
+            .get();
+
+        if (!utrCheck.empty) {
+            alert("❌ This UTR has already been used. Please enter a new payment UTR.");
+            btn.disabled = false;
+            btn.innerText = "Confirm Payment";
+            return;
+        }
+
+        // 3️⃣ Save payment
+        const receiptData = {
+            ...appointmentData,
+            lawyerName: "Adv. Tarun Bisht",
+            lawyerId: "LAWYER_001",
+            utr,
+            amount: 1,
+            paymentMethod: "UPI",
+            status: "Paid",
+            paymentDate: new Date().toLocaleString()
+        };
+
+        await db.collection("payments").add({
+            ...receiptData,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // 4️⃣ Save receipt locally
+        localStorage.setItem("receiptData", JSON.stringify(receiptData));
+        localStorage.removeItem("appointmentData");
+
+        // 5️⃣ Redirect to receipt page
+        window.location.href = "receipt.html";
+
+    } catch (error) {
+        console.error(error);
+        alert("Something went wrong. Please try again.");
+        btn.disabled = false;
+        btn.innerText = "Confirm Payment";
+    }
+});
+</script>
+
+</body>
+</html>

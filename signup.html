@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | AdvocatBisht</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjjjDzgFfH4qX4iTWtB4xNBSXDpAVbhuc",
+            authDomain: "advocate-b0ccf.firebaseapp.com",
+            projectId: "advocate-b0ccf",
+            storageBucket: "advocate-b0ccf.firebasestorage.app",
+            messagingSenderId: "534472016070",
+            appId: "1:534472016070:web:1c9579bc529aed9ef1d7c7"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+    </script>
+</head>
+<body class="login-body">
+    <div class="login-card">
+        <div class="logo-small"><i class="fas fa-balance-scale"></i> Advocat<span>Bisht</span></div>
+        <h2>Create Account</h2>
+
+        <div class="role-toggle" id="roleContainer">
+            <div class="role-slider" id="slider"></div>
+            <button type="button" class="role-btn active" id="btn-client">Client</button>
+            <button type="button" class="role-btn" id="btn-lawyer">Lawyer</button>
+        </div>
+
+        <form id="signupForm">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" required placeholder="Enter email">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="pass" required placeholder="Min 6 characters" minlength="6">
+            </div>
+            
+            <div class="form-group" id="barIdGroup" style="display: none;">
+                <label>Bar Council ID</label>
+                <input type="text" id="barId" placeholder="e.g. D/1234/2026">
+                <small style="color: #777;">Admin will verify this before approval.</small>
+            </div>
+
+            <button type="submit" class="btn-login">Sign Up</button>
+        </form>
+        <p style="margin-top: 15px;"><a href="index.html" style="color: #d4af37; text-decoration: none;">Back to Login</a></p>
+    </div>
+
+    <script>
+        let selectedRole = 'client';
+        const barIdGroup = document.getElementById('barIdGroup');
+        const roleSlider = document.getElementById('roleContainer');
+
+        document.getElementById('btn-client').onclick = () => {
+            selectedRole = 'client';
+            roleSlider.classList.remove('lawyer-active');
+            barIdGroup.style.display = 'none';
+        };
+
+        document.getElementById('btn-lawyer').onclick = () => {
+            selectedRole = 'lawyer';
+            roleSlider.classList.add('lawyer-active');
+            barIdGroup.style.display = 'block';
+        };
+
+        document.getElementById('signupForm').onsubmit = (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('pass').value;
+            const barId = document.getElementById('barId').value;
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Create a user profile in Firestore with 'isApproved' status
+                    return db.collection("users").doc(userCredential.user.uid).set({
+                        email: email,
+                        role: selectedRole,
+                        barId: selectedRole === 'lawyer' ? barId : null,
+                        isApproved: selectedRole === 'lawyer' ? false : true, // Clients auto-approved, Lawyers pending
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                })
+                .then(() => {
+                    if (selectedRole === 'lawyer') {
+                        alert("Account created! Please wait for Admin to verify your Bar ID before you can log in.");
+                    } else {
+                        alert("Registration successful!");
+                    }
+                    window.location.href = "index.html";
+                })
+                .catch(err => alert(err.message));
+        };
+    </script>
+</body>
+</html>

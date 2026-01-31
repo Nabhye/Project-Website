@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdvocatBisht | Legal Partner You Can Trust</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a365d;
+            --secondary: #d4af37;
+            --accent: #2d4a8a;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            background-color: #fff;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header & Navigation */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 30px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary);
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            left: 0;
+            bottom: -5px;
+            transition: var(--transition);
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary);
+            color: var(--primary);
+            padding: 12px 28px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background-color: #e6c126;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(26, 54, 93, 0.85), rgba(26, 54, 93, 0.9)), url('https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .search-box {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .search-group {
+            text-align: left;
+        }
+
+        .search-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .search-group select, .search-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            color: var(--dark);
+            background-color: white;
+        }
+
+        .search-group select:focus, .search-group input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 80px 0;
+            background-color: var(--light);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-box {
+            background-color: white;
+            padding: 40px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .stat-box:hover {
+            transform: translateY(-10px);
+        }
+
+        .stat-box h3 {
+            font-size: 42px;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .stat-box p {
+            color: var(--gray);
+            font-size: 18px;
+        }
+
+        /* Lawyers Section */
+        .lawyers {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 3px;
+            background-color: var(--secondary);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title p {
+            max-width: 700px;
+            margin: 0 auto;
+            color: var(--gray);
+            font-size: 18px;
+        }
+
+        .lawyer-profile {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 50px;
+            margin-bottom: 80px;
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .lawyer-img {
+            background: url('https://images.unsplash.com/photo-1589391886085-8b6b0ac72a1a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80') center/cover;
+            min-height: 500px;
+        }
+
+        .lawyer-info {
+            padding: 40px 40px 40px 0;
+        }
+
+        .lawyer-info h3 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .lawyer-title {
+            color: var(--secondary);
+            font-size: 20px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .experience {
+            display: inline-block;
+            background-color: var(--light);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 25px;
+        }
+
+        .lawyer-info p {
+            margin-bottom: 25px;
+            color: var(--gray);
+            font-size: 17px;
+        }
+
+        .expertise-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .expertise-list li {
+            list-style: none;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .expertise-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        /* Services Section */
+        .services {
+            padding: 80px 0;
+            background-color: var(--light);
+        }
+
+        .services-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            height: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .service-icon {
+            background-color: var(--primary);
+            color: white;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+
+        .service-content {
+            padding: 25px;
+        }
+
+        .service-content h4 {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .service-content p {
+            color: var(--gray);
+        }
+
+        /* Appointment Section */
+        .appointment {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .appointment-form {
+            background-color: white;
+            border-radius: 12px;
+            padding: 50px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 70px 0 30px;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .footer-logo span {
+            color: var(--secondary);
+        }
+
+        .footer-about p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        .footer-links h4, .footer-contact h4 {
+            font-size: 20px;
+            margin-bottom: 25px;
+            color: white;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links ul li a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links ul li a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+
+        .footer-contact p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-contact i {
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .lawyer-profile {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            
+            .lawyer-img {
+                min-height: 400px;
+            }
+            
+            .lawyer-info {
+                padding: 40px;
+            }
+            
+            .hero h1 {
+                font-size: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                padding: 15px 0;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+            }
+            
+            nav ul li {
+                margin: 0 10px;
+            }
+            
+            .hero {
+                padding: 70px 0;
+            }
+            
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .search-box {
+                grid-template-columns: 1fr;
+            }
+            
+            .appointment-form {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .expertise-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title h2 {
+                font-size: 28px;
+            }
+            
+            .lawyer-info h3 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-balance-scale"></i> Advocat<span>Bisht</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#booking">Book Appointment</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <a href="book_consultation.html" class="btn">Consult Now</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Legal Partner You Can Trust!</h1>
+            <p>Thousands of Clients use AdvocatBisht to get Expert Legal Solutions.</p>
+            
+            <div class="search-box">
+                <div class="search-group">
+                    <label for="area-of-law">Area of Law?</label>
+                    <select id="area-of-law">
+                        <option value="" disabled selected>Select Law</option>
+                        <option value="civil">Civil Law</option>
+                        <option value="divorce">Divorce Law</option>
+                        <option value="property">Property Law</option>
+                        <option value="criminal">Criminal Law</option>
+                        <option value="banking">Banking Law</option>
+                        <option value="consumer">Consumer Court Law</option>
+                        <option value="trademark">Trademark & Copyright</option>
+                    </select>
+                </div>
+                
+                <div class="search-group">
+                    <label for="location">Where?</label>
+                    <select id="location">
+                        <option value="" disabled selected>Location</option>
+                        <option value="delhi">New Delhi</option>
+                        <option value="mumbai">Mumbai</option>
+                        <option value="bangalore">Bangalore</option>
+                        <option value="kolkata">Kolkata</option>
+                        <option value="chennai">Chennai</option>
+                    </select>
+                </div>
+                
+                <div class="search-group">
+                    <label>&nbsp;</label>
+                    <button class="btn" style="width: 100%;">Search <i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container stats-container">
+            <div class="stat-box">
+                <h3>15,000+</h3>
+                <p>Legal Experts</p>
+            </div>
+            <div class="stat-box">
+                <h3>900+</h3>
+                <p>Cities Covered</p>
+            </div>
+            <div class="stat-box">
+                <h3>45,000+</h3>
+                <p>Legal Advice Provided</p>
+            </div>
+            <div class="stat-box">
+                <h3>25+</h3>
+                <p>Years of Experience</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lawyer Profile Section -->
+    <section class="lawyers" id="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>Meet Our Lead Attorney</h2>
+                <p>With decades of legal expertise, Adv. Tarun Bisht provides unmatched legal counsel and representation</p>
+            </div>
+            
+            <div class="lawyer-profile">
+                <div class="lawyer-img"></div>
+                <div class="lawyer-info">
+                    <h3>Adv. Tarun Bisht</h3>
+                    <span class="lawyer-title">Senior Advocate & Legal Consultant</span>
+                    <div class="experience">25+ Years of Experience</div>
+                    
+                    <p>Adv. Tarun Bisht is a distinguished legal professional with over two decades of experience in various domains of law. He has successfully handled more than 5,000 cases with a remarkable success rate, providing expert counsel to individuals and corporations alike.</p>
+                    
+                    <p>His expertise spans across multiple legal fields with a special focus on civil litigation, property disputes, and corporate law. He is known for his strategic approach, attention to detail, and unwavering commitment to his clients' interests.</p>
+                    
+                    <h4 style="margin-top: 30px; margin-bottom: 15px;">Areas of Expertise:</h4>
+                    <ul class="expertise-list">
+                        <li>Civil Law & Litigation</li>
+                        <li>Property Dispute Resolution</li>
+                        <li>Corporate & Banking Law</li>
+                        <li>Divorce & Family Law</li>
+                        <li>Criminal Defense</li>
+                        <li>Consumer Protection</li>
+                        <li>Trademark & Copyright</li>
+                        <li>Contract Law & Negotiations</li>
+                    </ul>
+                    
+                    <a href= "book_consultation.html" class="btn">Book Consultation</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-title">
+                <h2>Most Popular Legal Services</h2>
+                <p>Comprehensive legal solutions tailored to meet your specific needs</p>
+            </div>
+            
+            <div class="services-container">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <div class="service-content">
+                        <h4>Civil Law</h4>
+                        <p>Most common field of law that deals with disputes among individuals regarding property, contracts, and personal rights.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-heart-broken"></i>
+                    </div>
+                    <div class="service-content">
+                        <h4>Divorce Law</h4>
+                        <p>Dissolution of legally recognized marriage, covering alimony, child custody, and property division matters.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="service-content">
+                        <h4>Property Law</h4>
+                        <p>Deals with movable and immovable property ownership, possession, sale, and inheritance disputes.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <div class="service-content">
+                        <h4>Criminal Law</h4>
+                        <p>State-enforced rules and regulations controlling citizen conduct with defense against criminal charges.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <div class="service-content">
+                        <h4>Banking Law</h4>
+                        <p>Administration over banking business, aimed at regulating transactions and financial disputes.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <div class="service-content">
+                        <h4>Cheque Bounce Law</h4>
+                        <p>Dishonour of cheques covered under The Negotiable Instruments Act with legal recourse for recovery.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Appointment Section -->
+    
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-about">
+                    <a href="#" class="footer-logo">Advocat<span>Bisht</span></a>
+                    <p>Providing expert legal solutions with integrity, professionalism, and unwavering commitment to client success for over 25 years.</p>
+                    <div class="social-links">
+                        <a href="#" style="color: white; margin-right: 15px; font-size: 20px;"><i class="fab fa-facebook"></i></a>
+                        <a href="#" style="color: white; margin-right: 15px; font-size: 20px;"><i class="fab fa-twitter"></i></a>
+                        <a href="#" style="color: white; margin-right: 15px; font-size: 20px;"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://www.instagram.com/tarunsingh8866/" style="color: white; font-size: 20px;"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About Advocate</a></li>
+                        <li><a href="#services">Legal Services</a></li>
+                        <li><a href="#booking">Book Appointment</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Legal Avenue, Supreme Court Road, New Delhi - 110001</p>
+                    <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                    <p><i class="fas fa-envelope"></i> consult@advocatbisht.com</p>
+                    <p><i class="fas fa-clock"></i> Mon-Fri: 9:00 AM - 7:00 PM, Sat: 10:00 AM - 4:00 PM</p>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 AdvocatBisht. All rights reserved. | Designed with expertise and precision</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Form submission handling
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const service = document.getElementById('service').options[document.getElementById('service').selectedIndex].text;
+            
+            // Show confirmation message
+            alert(`Thank you ${name}! Your appointment request for ${service} has been received. We will contact you shortly to confirm your booking.`);
+            
+            // Reset form
+            document.getElementById('bookingForm').reset();
+        });
+        
+        // Set minimum date for appointment to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('date').setAttribute('min', today);
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Add this inside the <script> tag at the bottom of home.html
+document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const appointmentData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        service: document.getElementById('service').value,
+        date: document.getElementById('date').value,
+        time: document.getElementById('time').value,
+        description: document.querySelector('textarea').value,
+        status: "Pending",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    db.collection("appointments").add(appointmentData)
+    .then(() => {
+        alert("Success! Your appointment is recorded.");
+        document.getElementById('bookingForm').reset();
+    })
+    .catch((error) => {
+        alert("Error saving booking: " + error.message);
+    });
+});
+    </script>
+</body>
+</html>
